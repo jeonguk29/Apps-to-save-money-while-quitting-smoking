@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 void main() {
   runApp(
     MaterialApp(
-      home: HomePage(),
+      home: Home(),
       title: "Water-Animation",
     ),
   );
@@ -16,6 +16,76 @@ void main() {
     ),
   );
 }
+
+
+
+class Home extends StatefulWidget {
+  const Home({Key key}) : super(key: key);
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xff888080),
+      appBar: AppBar( title: Text('금연 적금 첼린지') ),
+      body:
+      Container(
+        child: Center(
+          child: Column(
+            children: [
+              Text("남은 개비 : 20"),
+              Container(
+                padding: EdgeInsets.all(50),
+                child: Center(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: 60,
+                        height: 300,
+                        child: ColoredBox(
+                          color: Color(0xffFFFFFF),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 60,
+                        height: 150,
+                        child: ColoredBox(
+                          color: Color(0xffd27c18),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+
+      bottomNavigationBar: BottomAppBar( child: SizedBox(
+        height: 60,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(icon: Icon(Icons.smoking_rooms), onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+            }),
+            Icon(Icons.add_circle_outline),
+            Icon(Icons.send)
+          ],
+        ),
+      ) ),
+    );
+
+  }
+}
+
+
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -144,8 +214,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               setState(() {//setState : 호출하면 ui를 변경하겠다라는 것
                 counter = counter + 10;//_counter값 하나씩 증가
                 counter2 = counter2 - 25.0;
-                if (counter2 >= 10.0){
-
+                if (counter2 <= 50.0){
+                  counter2 = 300.0;
+                  Navigator.pop(context);
                 }
               });
             },
