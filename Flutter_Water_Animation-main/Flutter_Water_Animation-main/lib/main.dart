@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(
@@ -26,20 +27,22 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
+int cigarette = 20;
+
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff888080),
-      appBar: AppBar( title: Text('금연 적금 첼린지') ),
+      appBar: AppBar( title: Text('금연해서 100만 원 모으기 첼린지') , backgroundColor: Color(0xff888080), ),
       body:
       Container(
         child: Center(
           child: Column(
             children: [
-              Text("남은 개비 : 20"),
+              Text('남은개비 : $cigarette'),
               Container(
-                padding: EdgeInsets.all(50),
+                padding: EdgeInsets.all(30),
                 child: Center(
                   child: Column(
                     children: [
@@ -73,8 +76,15 @@ class _HomeState extends State<Home> {
           children: [
             IconButton(icon: Icon(Icons.smoking_rooms), onPressed: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+            setState(() { //setState : 호출하면 ui를 변경하겠다라는 것
+              cigarette = cigarette - 1;
+            });
             }),
-            Icon(Icons.add_circle_outline),
+            IconButton(icon: Icon(Icons.add_circle_outline), onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Save()));
+              
+            }),
+
             Icon(Icons.send)
           ],
         ),
@@ -85,6 +95,36 @@ class _HomeState extends State<Home> {
 }
 
 
+class Save extends StatefulWidget {
+  const Save({Key key}) : super(key: key);
+
+  @override
+  State<Save> createState() => _SaveState();
+}
+
+class _SaveState extends State<Save> {
+  // 브라우저를 열 링크
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar( title: Text('금연해서 100만 원 모으기 첼린지') , backgroundColor: Color(0xff888080), ),
+      body: Container(
+        child: Row(
+          children: [
+            OutlinedButton.icon( onPressed: () async {
+              // 브라우저를 열 링크
+              const url = 'https://google.com';
+              // 외부 브라우저 실행
+              await launch(url, forceWebView: false, forceSafariVC: false);
+            },
+              icon: Icon(Icons.add, size: 18), label: Text("OUTLINED BUTTON"), )
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar( child: Text('하단바임 ㅅㄱ') ),
+    );
+  }
+}
 
 
 class HomePage extends StatefulWidget {
