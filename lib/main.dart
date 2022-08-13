@@ -4,10 +4,17 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'todo.dart';
 
 void main() {
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: Colors.blue,
+          accentColor: Colors.orange
+      ),
       home: Home(),
       title: "Water-Animation",
     ),
@@ -23,7 +30,7 @@ void main() {
 
 
 class Home extends StatefulWidget {
-  const Home({Key key}) : super(key: key);
+  const Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -36,12 +43,12 @@ int money_count = 1000000;
 
 saveData() async {
   var storage = await SharedPreferences.getInstance();
-  cigarette_count = storage.getInt('cigarette');
+  cigarette_count = storage.getInt('cigarette')!;
   if( storage.getInt('save_money') == null){
     add_count = 0;
   }
   else{
-    add_count = storage.getInt('save_money');
+    add_count = storage.getInt('save_money')!;
     money_count = 1000000 - add_count;
     if(money_count < 0){
       storage.setInt('save_money',0);
@@ -61,8 +68,8 @@ setSave() async {
     storage.setInt('save_money',4500);
   }
   else{
-    add_count = storage.getInt('save_money');
-    int n = storage.getInt('save_money');
+    add_count = storage.getInt('save_money')!;
+    int n = storage.getInt('save_money')!;
     storage.setInt('save_money',n + 4500);
   }
 
@@ -80,6 +87,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       backgroundColor: Color(0xff888080),
       appBar: AppBar( title: Text('금연해서 100만 원 모으기 첼린지') , backgroundColor: Color(0xff888080), ),
@@ -88,7 +97,9 @@ class _HomeState extends State<Home> {
         child: Center(
           child: Column(
             children: [
-              Text('남은개비 : $cigarette_count'),
+              Text('남은개비 : $cigarette_count',  style: TextStyle(fontSize: 41,  color: Color(
+                  0xff131313) ),
+              ),
               Container(
                 padding: EdgeInsets.all(30),
                 child: Center(
@@ -124,24 +135,28 @@ class _HomeState extends State<Home> {
           children: [
             IconButton(icon: Icon(Icons.smoking_rooms), onPressed: (){
               if(cigarette_count > 0)
-                {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
-                  setState(() { //setState : 호출하면 ui를 변경하겠다라는 것
-                    cigarette_count = cigarette_count - 1;
-                    setData(cigarette_count);
-                  });
-                }
+              {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+                setState(() { //setState : 호출하면 ui를 변경하겠다라는 것
+                  cigarette_count = cigarette_count - 1;
+                  setData(cigarette_count);
+                });
+              }
               else{
                 Navigator.push(context, MaterialPageRoute(builder: (context) => Save()));
               }
-              }),
+            }),
 
             IconButton(icon: Icon(Icons.add_circle_outline), onPressed: (){
               Navigator.push(context, MaterialPageRoute(builder: (context) => Save()));
-              
+
             }),
 
-            Icon(Icons.send)
+            IconButton(icon: Icon(Icons.list), onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Todo()));
+
+            }),
+
           ],
         ),
       ) ),
@@ -152,7 +167,7 @@ class _HomeState extends State<Home> {
 
 
 class Save extends StatefulWidget {
-  const Save({Key key}) : super(key: key);
+  const Save({Key? key}) : super(key: key);
 
   @override
   State<Save> createState() => _SaveState();
@@ -164,18 +179,72 @@ class _SaveState extends State<Save> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar( title: Text('금연해서 100만 원 모으기 첼린지') , backgroundColor: Color(0xff888080), ),
-      body: Container(
-        child: Row(
+      body:
+      Container(
+        width: 800,
+        height: 800,
+        color: Color(0xff888080),
+        child: Column(
           children: [
-            Container(
-              child: Column(
+
+            Padding(
+              padding: const  EdgeInsets.fromLTRB(15, 50, 0, 15),
+              child: Row(
                 children: [
-                  Text('목표액수 까지 : $money_count'),
-                  Text('저금액수 : $add_count'),
+                  Container(
+                      height: 100,
+                      width: 180,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(10.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 5.0,
+                            spreadRadius: 3.0,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Text('목표액수 까지 ',style: TextStyle(fontSize: 20)),
+                          Text('$money_count 원',style: TextStyle(fontSize: 20)),
+                        ],
+                      )
+
+                  ),
+                  Container(
+                      height: 100,
+                      width: 180,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Color(0xff18d728),
+                        borderRadius: BorderRadius.circular(10.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 5.0,
+                            spreadRadius: 3.0,
+                          ),
+                        ],
+                      ),
+                      child:
+                      Column(
+                        children: [
+                          Text('저금액수 ',style: TextStyle(fontSize: 20)),
+                          Text('$add_count 원',style: TextStyle(fontSize: 20)),
+                        ],
+                      )
+                  ),
                 ],
               ),
             ),
-            OutlinedButton.icon( onPressed: () async {
+
+            Padding(
+            padding: const  EdgeInsets.fromLTRB(10, 40, 0, 10),
+            child:
+            ElevatedButton.icon( onPressed: () async {
               // 브라우저를 열 링크
               const url = 'https://www.kakaopay.com/';
               // 외부 브라우저 실행
@@ -186,75 +255,84 @@ class _SaveState extends State<Save> {
                 context: context,
                 builder: (context){
                   return Dialog(
-                      child: Container(
-                        height: 400, width: 330,
-                        //padding: EdgeInsets.all(10),
+                    child: Container(
+                      height: 400, width: 330,
+                      //padding: EdgeInsets.all(10),
 
-                        child: Column(
-                            crossAxisAlignment:CrossAxisAlignment.start,
-                            children: [
-                        Container(
-                        padding: EdgeInsets.all(30),
-                        child: Text("양심적으로 4500원 본인 적금 계좌에 입금 하고 오세요 100만원 금방입니다 ",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                      child: Column(
+                        crossAxisAlignment:CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(30),
+                            child: Text("양심적으로 4500원 본인 적금 계좌에 입금 하고 오세요 100만원 금방입니다 ",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(30, 10, 0, 5),
-                        child:
-                        Text("진짜 입금 하셨습니까?",
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
+                          Container(
+                            padding: EdgeInsets.fromLTRB(30, 10, 0, 5),
+                            child:
+                            Text("진짜 입금 하셨습니까?",
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
+
+                          Padding(
+                            padding: const  EdgeInsets.fromLTRB(30, 0, 0, 30),
+                            child: Container(
+                              //padding: EdgeInsets.fromLTRB(100, 0, 0, 30),
+
+                              height:1.0,
+                              width:270.0,
+                              color:Colors.black12,),
+                          ),
+                          Container(
+                            padding: const  EdgeInsets.fromLTRB(30, 0, 20, 30),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(onPressed: (){
+                                  Navigator.pop(context); //열려있는 Dialog를 닫는 부분입니다.
+                                }, child: Text("Cansel")),
+
+                                TextButton(onPressed: (){
+                                  Navigator.pop(context); // 열려있는 Dialog를 닫는 부분입니다.
+                                  setState(() { //setState : 호출하면 ui를 변경하겠다라는 것
+                                    cigarette_count = 20;
+                                    setData(cigarette_count);
+                                    setSave();
+                                    saveData();
+                                  });
+                                }, child: Text("OK")),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
-
-                      Padding(
-                        padding: const  EdgeInsets.fromLTRB(30, 0, 0, 30),
-                        child: Container(
-                          //padding: EdgeInsets.fromLTRB(100, 0, 0, 30),
-
-                          height:1.0,
-                          width:270.0,
-                          color:Colors.black12,),
-                      ),
-                      Container(
-                        padding: const  EdgeInsets.fromLTRB(30, 0, 20, 30),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(onPressed: (){
-                              Navigator.pop(context); //열려있는 Dialog를 닫는 부분입니다.
-                            }, child: Text("Cansel")),
-
-                            TextButton(onPressed: (){
-                              Navigator.pop(context); // 열려있는 Dialog를 닫는 부분입니다.
-                              setState(() { //setState : 호출하면 ui를 변경하겠다라는 것
-                                cigarette_count = 20;
-                                setData(cigarette_count);
-                                setSave();
-                                saveData();
-                              });
-                            }, child: Text("OK")),
-                          ],
-                        ),
-                      )
-                  ],
-                  ),
-                  ),
+                    ),
                   );
                 },
               );
             },
-              icon: Icon(Icons.savings, size: 50, color: Color(0xffefe240)), label: Text("카카오페이 바로가기", style: TextStyle(
+              style: ElevatedButton.styleFrom(
+                primary: Color(0xffeac529),
+                shape: RoundedRectangleBorder(
+                  // shape : 버튼의 모양을 디자인 하는 기능
+
+                    borderRadius: BorderRadius.circular(10.0)
+                ),
+              ),
+              icon: Icon(Icons.savings, size: 50), label: Text("카카오페이 바로가기", style: TextStyle(
                   color: Colors.black,
                   letterSpacing: 2.0,
                   fontSize: 28.0,
                   fontWeight: FontWeight.bold),),
+            ),
             ),
 
           ],
@@ -271,17 +349,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  AnimationController firstController;
-  Animation<double> firstAnimation;
+  late AnimationController firstController;
+  late Animation<double> firstAnimation;
 
-  AnimationController secondController;
-  Animation<double> secondAnimation;
+  late AnimationController secondController;
+  late Animation<double> secondAnimation;
 
-  AnimationController thirdController;
-  Animation<double> thirdAnimation;
+  late AnimationController thirdController;
+  late Animation<double> thirdAnimation;
 
-  AnimationController fourthController;
-  Animation<double> fourthAnimation;
+  late AnimationController fourthController;
+  late Animation<double> fourthAnimation;
 
   @override
   void initState() {
@@ -403,60 +481,60 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
       backgroundColor: Color(0xffe1d4d4),
       body: Stack(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(100),
-                  child: Center(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: 60,
-                          height: 10,
-                          child: ColoredBox(
-                            color: Color(0xffdc1717),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 60,
-                          height: counter2,
-                          child: ColoredBox(
-                            color: Color(0xffFFFFFF),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 60,
-                          height: 150,
-                          child: ColoredBox(
-                            color: Color(0xffd27c18),
-                          ),
-                        ),
-                      ],
+        children: [
+          Container(
+            padding: EdgeInsets.all(100),
+            child: Center(
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: 60,
+                    height: 10,
+                    child: ColoredBox(
+                      color: Color(0xffdc1717),
                     ),
                   ),
-                ),
-                Center(
-                  child: Text('$counter%',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          wordSpacing: 3,
-                          color: Colors.black.withOpacity(.7)),
-                      textScaleFactor: 7),
-                ),
-                CustomPaint(
-                  painter: MyPainter(
-                    firstAnimation.value,
-                    secondAnimation.value,
-                    thirdAnimation.value,
-                    fourthAnimation.value,
+                  SizedBox(
+                    width: 60,
+                    height: counter2,
+                    child: ColoredBox(
+                      color: Color(0xffFFFFFF),
+                    ),
                   ),
-                  child: SizedBox(
-                    height: size.height,
-                    width: size.width,
+                  SizedBox(
+                    width: 60,
+                    height: 150,
+                    child: ColoredBox(
+                      color: Color(0xffd27c18),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-        );
+          ),
+          Center(
+            child: Text('$counter%',
+                style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    wordSpacing: 3,
+                    color: Colors.black.withOpacity(.7)),
+                textScaleFactor: 7),
+          ),
+          CustomPaint(
+            painter: MyPainter(
+              firstAnimation.value,
+              secondAnimation.value,
+              thirdAnimation.value,
+              fourthAnimation.value,
+            ),
+            child: SizedBox(
+              height: size.height,
+              width: size.width,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -496,7 +574,7 @@ class MyPainter extends CustomPainter {
 }
 
 class somking extends StatefulWidget {
-  const somking({Key key}) : super(key: key);
+  const somking({Key? key}) : super(key: key);
 
   @override
   State<somking> createState() => _somkingState();
@@ -508,3 +586,6 @@ class _somkingState extends State<somking> {
     return Container();
   }
 }
+
+
+
