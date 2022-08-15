@@ -4,9 +4,15 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'todo.dart';
+import 'package:money_save_smoking/todo.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive/hive.dart';
+import 'package:money_save_smoking/task.dart';
 
-void main() {
+Future<void> main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(TaskAdapter());
+  await Hive.openBox<Task>('todo_box');
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
