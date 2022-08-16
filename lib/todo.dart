@@ -29,22 +29,25 @@ class _TodoState extends State<Todo> {
     tasksBox = Hive.box('todo_box');
   }
 
+
+
   void onAddTask() {
-    if (_textEditingController.text.isEmpty) {
-      final newTask = Task(" ", false);
+    if(_textEditingController.text.isEmpty) {
+      final newTask = Task(_textEditingController.text = "값이 없음", false);
       tasksBox.add(newTask);
       Navigator.pop(context);
       _textEditingController.clear();
       return;
     }
-
-    if (_textEditingController.text.isNotEmpty) {
+    else if (_textEditingController.text.isNotEmpty) {
       final newTask = Task(_textEditingController.text, false);
       tasksBox.add(newTask);
       Navigator.pop(context);
       _textEditingController.clear();
       return;
     }
+
+
 
   }
 
@@ -58,6 +61,18 @@ class _TodoState extends State<Todo> {
     return;
   }
 
+
+
+
+  void _login() {
+    onAddTask();
+  }
+
+  bool _isValid() {
+    return (_textEditingController.text.length >= 2);
+  }
+  final _formkey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,12 +84,22 @@ class _TodoState extends State<Todo> {
       body:ValueListenableBuilder(
         valueListenable: tasksBox.listenable(),
         builder: (context, value, child) {
-          if (tasksBox.length > 0) {
+          if (tasksBox.length > 0 && tasksBox.values.isNotEmpty) {
             return ListView.separated(
                 itemBuilder: (context, index) {
-                  final task = tasksBox.get(index) ?? Task();
+                  Task task;
+                  if(tasksBox.get(index) == null)
+                    {
+                      tasksBox.delete(index);
+                      task = Task("값이 없음", false);
+                      tasksBox.add(task);
+                    }
+                  else if(tasksBox.get(index) != null)
+                  {
+                    
+                  }
                   return ListTile(
-                    title: Text((task.title)),
+                    title: Text(task.title),
                     leading: Checkbox(
                         activeColor: Color(0x800d3257),
                         value: task.completed,
@@ -88,7 +113,9 @@ class _TodoState extends State<Todo> {
               itemCount: tasksBox.length,
               separatorBuilder: (context, index) => Divider(),
             );
-          } else {
+          }
+
+          else {
             return EmptyList();
           }
         },
@@ -101,22 +128,21 @@ class _TodoState extends State<Todo> {
           builder: (context) {
             return AlertDialog(
               title: Text('하고 싶은 사고 싶은 것을 기록해 보세요'),
-              content: TextField(
+              content: TextFormField(
                 controller: _textEditingController,
                 decoration: InputDecoration(hintText: "입력해 주세요"),
                 autofocus: true,
+                validator: (String? value){
+                  if ((value == null)) {
+                    return _textEditingController.text = "값이 없음";
+                  } else {
+                    return _textEditingController.text = value;
+                  }
+                },
+
               ),
               actions: [
-                TextButton(onPressed: () {
-                  if (_textEditingController == null)
-                    {
-                      _textEditingController.text = " ";
-                    }
-                  else{
-                    onAddTask();
-                  }
-            },
-                    child: Text('저장'))
+                TextButton(onPressed: () => onAddTask(), child: Text('SAVE'))
               ],
             );
           },
