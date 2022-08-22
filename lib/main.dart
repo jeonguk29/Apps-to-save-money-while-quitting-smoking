@@ -4,15 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'package:money_save_smoking/todo.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:hive/hive.dart';
-import 'package:money_save_smoking/task.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-Future<void> main() async {
-  await Hive.initFlutter();
-  Hive.registerAdapter(TaskAdapter());
-  await Hive.openBox<Task>('todo_box');
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
+
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -89,7 +86,12 @@ class _HomeState extends State<Home> {
   void initState(){  // 앱 로드 될때 바로 GET 하고 싶음 그럼 이렇게
     super.initState();
     saveData();
+
+    banner = BannerAd(size: AdSize.banner, adUnitId: androidTestUnitId , listener: BannerAdListener() , request: AdRequest())..load();
   }
+
+  final String androidTestUnitId = "ca-app-pub-3940256099942544/6300978111";
+  BannerAd? banner;
 
   @override
   Widget build(BuildContext context) {
@@ -125,6 +127,13 @@ class _HomeState extends State<Home> {
                           color: Color(0xffd27c18),
                         ),
                       ),
+                      Padding(padding: EdgeInsets.all(26.0)),
+                      Container(
+                        height: 40.0,
+                        child: banner == null ? Container() : AdWidget(
+                          ad : banner!,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -156,12 +165,7 @@ class _HomeState extends State<Home> {
             IconButton(icon: Icon(Icons.add_circle_outline), onPressed: (){
               Navigator.push(context, MaterialPageRoute(builder: (context) => Save()));
 
-            }),
-
-            IconButton(icon: Icon(Icons.list), onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Todo()));
-
-            }),
+            })
 
           ],
         ),
@@ -173,13 +177,13 @@ class _HomeState extends State<Home> {
 
 
 class Save extends StatefulWidget {
-  const Save({Key? key}) : super(key: key);
-
+  const Save({Key? key }) : super(key: key);
   @override
   State<Save> createState() => _SaveState();
 }
 
 class _SaveState extends State<Save> {
+
   // 브라우저를 열 링크
   @override
   Widget build(BuildContext context) {
@@ -317,8 +321,9 @@ class _SaveState extends State<Save> {
                                 }, child: Text("OK")),
                               ],
                             ),
-                          )
+                          ),
                         ],
+
                       ),
                     ),
                   );
@@ -340,7 +345,6 @@ class _SaveState extends State<Save> {
                   fontWeight: FontWeight.bold),),
             ),
             ),
-
           ],
         ),
       ),

@@ -1,4 +1,4 @@
-name: money_save_smoking
+name: apps_to_save_money_while_quitting_smoking
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -12,13 +12,15 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # build by specifying --build-name and --build-number, respectively.
 # In Android, build-name is used as versionName while build-number used as versionCode.
 # Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.17.6 <3.0.0"
+  sdk: '>=2.19.0-108.0.dev <3.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -30,8 +32,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.0.15
-  hive: ^2.0.4
-  hive_flutter: ^1.0.0
+  google_mobile_ads: ^1.0.1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -39,12 +40,9 @@ dependencies:
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
-  hive_generator: ^1.1.0
-  build_runner: ^2.0.4
   url_launcher: ^6.1.5
   flutter_test:
     sdk: flutter
-
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -94,8 +92,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-rules:
-  prefer_const_constructors: false
-  avoid_print: false
-  prefer_typing_uninitialized_variables: false
-  prefer_const_constructors_in_immutables: false

@@ -1,4 +1,4 @@
-# money_save_smoking
+# apps_to_save_money_while_quitting_smoking
 
 A new Flutter project.
 
