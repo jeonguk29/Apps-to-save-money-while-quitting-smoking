@@ -90,7 +90,7 @@ class _HomeState extends State<Home> {
     banner = BannerAd(size: AdSize.banner, adUnitId: androidTestUnitId , listener: BannerAdListener() , request: AdRequest())..load();
   }
 
-  final String androidTestUnitId = "ca-app-pub-3940256099942544/6300978111";
+  final String androidTestUnitId = "ca-app-pub-5577758523706356~1068747239";
   BannerAd? banner;
 
   @override
@@ -127,9 +127,10 @@ class _HomeState extends State<Home> {
                           color: Color(0xffd27c18),
                         ),
                       ),
-                      Padding(padding: EdgeInsets.all(26.0)),
+                      Padding(padding: EdgeInsets.fromLTRB(0,50,0,0)),
                       Container(
                         height: 40.0,
+                        width: 350.0,
                         child: banner == null ? Container() : AdWidget(
                           ad : banner!,
                         ),
